@@ -44,7 +44,7 @@ class UserLoginApiView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+web_site = 'https://online-school-1wkk.onrender.com'
 
 class StudentAccountCreateView(APIView):
     serializer_class = StudentAccountSerializer
@@ -57,7 +57,7 @@ class StudentAccountCreateView(APIView):
 
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            confirm_link = f"http://127.0.0.1:8000/accounts/activate/{uid}/{token}"
+            confirm_link = f"{web_site}/accounts/activate/{uid}/{token}"
 
             email_subject = "Confirm Your Email"
             email_body = render_to_string('email/confirmation_email.html', {'confirm_link': confirm_link, 'user': user})
@@ -94,7 +94,7 @@ class TeacherAccountCreateView(APIView):
 
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            confirm_link = f"http://127.0.0.1:8000/account/activate/{uid}/{token}"
+            confirm_link = f"{web_site}/accounts/activate/{uid}/{token}"
 
             email_subject = "Confirm Your Email"
             email_body = render_to_string('email/confirmation_email.html', {'confirm_link': confirm_link, 'user': user})
