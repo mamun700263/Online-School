@@ -27,16 +27,10 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-<<<<<<< HEAD
-
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
-    'https://online-school-1wkk.onrender.com','https://*.127.0.0.1'
+    'https://online-school-1wkk.onrender.com', 'https://*.127.0.0.1'
 ]
-=======
-ALLOWED_HOSTS = ["*"]
-
->>>>>>> d438e8a89c4a3ee09a9d46cc681af8596ee711e6
 
 # Application definition
 
