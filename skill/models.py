@@ -15,7 +15,7 @@ class CourseModel(models.Model):
     thumbnail = models.ImageField(upload_to='skill/thumbnails')
     paid = models.BooleanField()
     price = models.IntegerField(null=True, blank=True)
-    approximate_time_to_finish = models.IntegerField(help_text="Time in hours")
+    time = models.IntegerField(help_text="Time in hours")
     rating = models.FloatField(default=0, null=True, blank=True)
 
     def __str__(self):
