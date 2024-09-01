@@ -44,74 +44,47 @@ class UserLoginApiView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
+
+
 web_site = 'https://online-school-1wkk.onrender.com'
 
-class StudentAccountCreateView(APIView):
+class AccountCreateView(APIView):
+    serializer_class = None  # This will be set in the subclasses
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            account = serializer.save()  # Save the account instance
+            user = account.user  # Access the User instance associated with the account
+
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            confirm_link = f"{web_site}/accounts/activate/{uid}/{token}"
+
+            email_subject = "Confirm Your Email"
+            email_body = render_to_string('email/confirmation_email.html', {'confirm_link': confirm_link, 'user': user})
+            
+            # Set up email
+            email = EmailMultiAlternatives(
+                email_subject,
+                email_body,
+                to=[user.email]
+            )
+            email.content_subtype = "html"
+            email.send()
+
+            return Response({"message": "Account created successfully. Please check your email to confirm your account."}, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class StudentAccountCreateView(AccountCreateView):
     serializer_class = StudentAccountSerializer
 
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            student_account = serializer.save()  # Save the StudentAccount instance
-            user = student_account.user  # Access the User instance associated with the StudentAccount
-
-            token = default_token_generator.make_token(user)
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            confirm_link = f"{web_site}/accounts/activate/{uid}/{token}"
-
-            email_subject = "Confirm Your Email"
-            email_body = render_to_string('email/confirmation_email.html', {'confirm_link': confirm_link, 'user': user})
-            
-            # Set up email
-            email = EmailMultiAlternatives(
-                email_subject,
-                email_body,
-                to=[user.email]
-            )
-            email.content_subtype = "html"
-            email.send()
-
-            return Response({"message": "Student created successfully. Please check your email to confirm your account."}, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
-
-
-
-
-class TeacherAccountCreateView(APIView):
+class TeacherAccountCreateView(AccountCreateView):
     serializer_class = TeacherAccountSerializer
 
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            teacher_account = serializer.save()  # Save the TeacherAccount instance
-            user = teacher_account.user  # Access the User instance associated with the TeacherAccount
-
-            token = default_token_generator.make_token(user)
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            confirm_link = f"{web_site}/accounts/activate/{uid}/{token}"
-
-            email_subject = "Confirm Your Email"
-            email_body = render_to_string('email/confirmation_email.html', {'confirm_link': confirm_link, 'user': user})
-            
-            # Set up email
-            email = EmailMultiAlternatives(
-                email_subject,
-                email_body,
-                to=[user.email]
-            )
-            email.content_subtype = "html"
-            email.send()
-
-            return Response({"message": "Teacher created successfully. Please check your email to confirm your account."}, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
 
 def activate(request, uid64, token):
