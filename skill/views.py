@@ -28,7 +28,7 @@ class CourseView(APIView):
             return Response({'message': 'Course created successfully!'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class SkillListView(APIView):
+class ListView(APIView):
     serializer_class = None
     model = None
 
@@ -37,10 +37,12 @@ class SkillListView(APIView):
         serializer = self.serializer_class(items, many=True)
         return Response(serializer.data)
 
-class SkillsListView(SkillListView):
+
+
+class SkillListView(ListView):
     serializer_class = SkillSerializer
     model = SkillModel
 
-class CourseListView(SkillListView):
+class CourseListView(ListView):
     serializer_class = CourseSerializer
     model = CourseModel

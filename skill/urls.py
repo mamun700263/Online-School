@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import SkillView, CourseView, SkillsListView, CourseListView
+from .views import SkillView, CourseView, SkillListView, CourseListView
 
 
 router = DefaultRouter()
@@ -15,5 +15,5 @@ urlpatterns = [
     path('courses/list/', CourseListView.as_view(), name='list-courses'),
 
     # API views for Skills
-    path('skills/list/', SkillsListView.as_view(), name='list-skills'),
+    path('skills/list/', SkillListView.as_view(), name='list-skills'),
 ]

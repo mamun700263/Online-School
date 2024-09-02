@@ -14,7 +14,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-
+from rest_framework import generics
 
 
 def send_email(subject, template_name, context, recipient_list):
@@ -125,3 +125,17 @@ def activate(request, uid64, token):
         return redirect(reverse_lazy('login'))
     else:
         return redirect(reverse_lazy('login'))
+
+
+
+
+
+# # List view for StudentAccount
+class StudentListView(generics.ListAPIView):
+    queryset = StudentAccount.objects.all()
+    serializer_class = StudentAccountSerializer
+
+# # List view for TeacherAccount
+class TeacherListView(generics.ListAPIView):
+    queryset = TeacherAccount.objects.all()
+    serializer_class = TeacherAccountSerializer
