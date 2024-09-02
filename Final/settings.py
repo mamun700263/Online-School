@@ -28,7 +28,11 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*"]#it is  open to every one
+CORS_ALLOWED_ORIGINS = [
+    "http://192.168.0.108:5500",
+    #add others
+]
 CSRF_TRUSTED_ORIGINS = [
     'https://online-school-1wkk.onrender.com', 'https://*.127.0.0.1'
 ]
@@ -42,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',#had to add because . i was facing problem fetching it 
     'rest_framework',
     'rest_framework.authtoken',
     'accounts',
@@ -57,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',#i had to add this because i had problem fetching it
 ]
 
 ROOT_URLCONF = 'Final.urls'
