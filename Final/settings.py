@@ -29,12 +29,20 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]#it is  open to every one
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://192.168.0.108:5500",
+#     #add others
+# ]
 CORS_ALLOWED_ORIGINS = [
+    "https://online-school-1wkk.onrender.com",  # Replace with your production frontend URL
+    "http://localhost:3000",  # If you have a local development server
     "http://192.168.0.108:5500",
-    #add others
+    'https://*.127.0.0.1',
 ]
+
 CSRF_TRUSTED_ORIGINS = [
-    'https://online-school-1wkk.onrender.com', 'https://*.127.0.0.1'
+    'https://online-school-1wkk.onrender.com', 'https://*.127.0.0.1',"http://localhost:3000","http://192.168.0.108:5500",
 ]
 
 # Application definition
