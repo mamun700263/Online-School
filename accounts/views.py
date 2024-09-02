@@ -16,7 +16,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from rest_framework import generics
 
-
 def send_email(subject, template_name, context, recipient_list):
     """
     Let's use it where ever it needs 
@@ -104,12 +103,16 @@ class AccountCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
+
 class StudentAccountCreateView(AccountCreateView):
     serializer_class = StudentAccountSerializer
 
 
 class TeacherAccountCreateView(AccountCreateView):
     serializer_class = TeacherAccountSerializer
+
 
 
 def activate(request, uid64, token):
