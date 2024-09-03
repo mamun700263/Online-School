@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ["*"]#it is  open to every one
 # ]
 CORS_ALLOWED_ORIGINS = [
     "https://online-school-1wkk.onrender.com",  # Replace with your production frontend URL
+    'https://mamun700263.github.io/Ghor-School/',
     "http://localhost:3000",  # If you have a local development server
     "http://192.168.0.108:5500",
     'https://*.127.0.0.1',
