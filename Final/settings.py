@@ -17,7 +17,7 @@ from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+PORT = os.environ.get('PORT', 8000)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -35,12 +35,13 @@ ALLOWED_HOSTS = ["*"]#it is  open to every one
 #     #add others
 # ]
 CORS_ALLOWED_ORIGINS = [
-    "https://online-school-1wkk.onrender.com",  # Replace with your production frontend URL
-    'https://mamun700263.github.io/Ghor-School/',
-    "http://localhost:3000",  # If you have a local development server
+    "https://online-school-1wkk.onrender.com",  # my backend URL
+    "https://mamun700263.github.io",  # only the platform
+    "http://localhost:3000",  #  local development server
     "http://192.168.0.108:5500",
-    'https://*.127.0.0.1',
+    'https://127.0.0.1',  # Update to correct syntax local
 ]
+
 
 CSRF_TRUSTED_ORIGINS = [
     'https://online-school-1wkk.onrender.com', 'https://*.127.0.0.1',"http://localhost:3000","http://192.168.0.108:5500",
