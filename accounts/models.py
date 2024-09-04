@@ -14,15 +14,21 @@ class Account(models.Model):
         return self.user.username
 
     def save(self, *args, **kwargs):
+        # Check if the user instance does not exist
+        if not self.user_id:
+            self.user = User.objects.create(username=self.unique_id)
+
         if not self.unique_id:
             self.unique_id = self.generate_unique_id()
-
 
         if isinstance(self, StudentAccount):
             self.profile_picture.field.upload_to = 'accounts/student_profiles/'
         elif isinstance(self, TeacherAccount):
             self.profile_picture.field.upload_to = 'accounts/teacher_profiles/'
+
         super().save(*args, **kwargs)
+
+
 
     def generate_unique_id(self):
         raise NotImplementedError("Subclasses should implement this method.")
