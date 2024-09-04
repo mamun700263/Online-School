@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import StudentAccount, TeacherAccount
@@ -40,15 +41,28 @@ class ProfileView(APIView):
 
     def get(self, request):
         user = request.user
+
+        # Attempt to retrieve the user's associated StudentAccount or TeacherAccount
+        try:
+            account = StudentAccount.objects.get(user=user)
+        except StudentAccount.DoesNotExist:
+            try:
+                account = TeacherAccount.objects.get(user=user)
+            except TeacherAccount.DoesNotExist:
+                return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Prepare the data to be returned in the response
         data = {
             'username': user.username,
             'email': user.email,
-            'mobile': getattr(user, 'mobile', ''), 
-            'date_of_birth': getattr(user, 'date_of_birth', ''),
-            'unique_id': getattr(user, 'unique_id', ''), 
-            'profile_picture': getattr(user, 'profile_picture', ''), 
+            'mobile': getattr(account, 'mobile', ''),
+            'date_of_birth': getattr(account, 'date_of_birth', ''),
+            'unique_id': getattr(account, 'unique_id', ''),
+            'profile_picture': getattr(account, 'profile_picture', ''),
         }
-        return Response(data)
+
+        return Response(data, status=status.HTTP_200_OK)
+
 
 web_site = 'https://online-school-1wkk.onrender.com'
 
@@ -62,6 +76,8 @@ class UserLogout(APIView):
 
 
 class UserLoginApiView(APIView):
+    authentication_classes = [] 
+    permission_classes = [AllowAny] 
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         
@@ -88,9 +104,12 @@ class UserLoginApiView(APIView):
 
 class AccountCreateView(APIView):
     serializer_class = None  # I will set this int the classes
+    authentication_classes = [] 
+    permission_classes = [AllowAny] 
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
+        
         if serializer.is_valid():
             account = serializer.save()  # Save the account instance
             user = account.user  # Access the User instance associated with the account 
@@ -152,6 +171,7 @@ def activate(request, uid64, token):
 
 # # List view for StudentAccount
 class StudentListView(generics.ListAPIView):
+    
     queryset = StudentAccount.objects.all()
     serializer_class = StudentAccountSerializer
 
