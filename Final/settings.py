@@ -35,17 +35,21 @@ ALLOWED_HOSTS = ["*"]#it is  open to every one
 #     #add others
 # ]
 CORS_ALLOWED_ORIGINS = [
-    "https://online-school-1wkk.onrender.com",  # my backend URL
-    "https://mamun700263.github.io",  # only the platform
-    "http://localhost:3000",  #  local development server
+    "https://online-school-1wkk.onrender.com",
+    "https://mamun700263.github.io",
+    "http://localhost:3000",
     "http://192.168.0.108:5500",
-    'https://127.0.0.1',  # Update to correct syntax local
+    'http://127.0.0.1:8000',  # Corrected syntax for local development
 ]
 
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://online-school-1wkk.onrender.com', 'https://*.127.0.0.1',"http://localhost:3000","http://192.168.0.108:5500",
+    'https://online-school-1wkk.onrender.com',
+    'http://localhost:3000',
+    'http://192.168.0.108:5500',
+    'http://127.0.0.1:8000',  # Corrected syntax for local development
 ]
+
 
 # Application definition
 
@@ -56,7 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',#had to add because . i was facing problem fetching it 
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'accounts',
@@ -72,8 +76,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',#i had to add this because i had problem fetching it
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'Final.urls'
 
@@ -185,7 +190,7 @@ EMAIL_HOST_PASSWORD = env("host_pass")
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        # Other authentication classes if needed
+        # Add other authentication classes if needed
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',

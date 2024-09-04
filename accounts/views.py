@@ -141,6 +141,7 @@ class AccountCreateView(APIView):
 
 
 
+
 class StudentAccountCreateView(AccountCreateView):
     serializer_class = StudentAccountSerializer
 
@@ -151,6 +152,7 @@ class TeacherAccountCreateView(AccountCreateView):
 
 
 login_page_front_end = "https://mamun700263.github.io/Ghor-School/login.html"
+
 def activate(request, uid64, token):
     try:
         uid = urlsafe_base64_decode(uid64).decode()
@@ -171,11 +173,14 @@ def activate(request, uid64, token):
 
 # # List view for StudentAccount
 class StudentListView(generics.ListAPIView):
-    
+    authentication_classes = [] 
+    permission_classes = [AllowAny] 
     queryset = StudentAccount.objects.all()
     serializer_class = StudentAccountSerializer
 
 # # List view for TeacherAccount
 class TeacherListView(generics.ListAPIView):
+    authentication_classes = [] 
+    permission_classes = [AllowAny] 
     queryset = TeacherAccount.objects.all()
     serializer_class = TeacherAccountSerializer
