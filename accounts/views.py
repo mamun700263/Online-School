@@ -35,6 +35,21 @@ def send_email(subject, template_name, context, recipient_list):
     email.send()
 
 
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        data = {
+            'username': user.username,
+            'email': user.email,
+            'mobile': getattr(user, 'mobile', ''), 
+            'date_of_birth': getattr(user, 'date_of_birth', ''),
+            'unique_id': getattr(user, 'unique_id', ''), 
+            'profile_picture': getattr(user, 'profile_picture', ''), 
+        }
+        return Response(data)
+
 web_site = 'https://online-school-1wkk.onrender.com'
 
 class UserLogout(APIView):
