@@ -13,15 +13,13 @@ class SkillSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    """
-    This addition thing is required to avoid the primary key problem
-    """
-    taken_by = serializers.PrimaryKeyRelatedField(
-        queryset=TeacherAccount.objects.all(),
-        many=False, 
-        required=True ,
-    )
-
     class Meta:
         model = CourseModel
-        fields = '__all__'
+        fields = ['name', 'description', 'skills', 'thumbnail', 'paid', 'price', 'time', 'rating', 'taken_by']
+        read_only_fields = ['taken_by', 'rating']
+
+    def create(self, validated_data):
+        request = self.context.get('request', None)
+        if request and request.user.is_authenticated:
+            validated_data['taken_by'] = request.user.teacher_profile  
+        return super().create(validated_data)

@@ -8,7 +8,7 @@ class SkillModel(models.Model):
         return self.name
 class CourseModel(models.Model):
     name = models.CharField(max_length=120)
-    taken_by = models.ForeignKey(TeacherAccount, on_delete=models.CASCADE, related_name='courses',default=1)
+    taken_by = models.ForeignKey(TeacherAccount, on_delete=models.CASCADE, related_name='account',default=1)
     description = models.TextField(default="description")  
     skills = models.ManyToManyField(SkillModel)  
     thumbnail = models.URLField(null=True, blank=True)

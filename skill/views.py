@@ -44,9 +44,13 @@ class ListView(APIView):
 
 
 class SkillListView(ListView):
-    serializer_class = SkillSerializer
+    authentication_classes = [] 
+    permission_classes = [AllowAny] 
+    serializer_class = SkillSerializer  
     model = SkillModel
 
 class CourseListView(ListView):
+    authentication_classes = [] 
+    permission_classes = [AllowAny] 
     serializer_class = CourseSerializer
     model = CourseModel
