@@ -4,7 +4,7 @@ import uuid
 
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='account')
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField( blank=True, null=True)
     unique_id = models.CharField(unique=True, editable=False, max_length=12)
     bio = models.TextField(blank=True, null=True)
     mobile = models.CharField(max_length=12, blank=True, null=True)

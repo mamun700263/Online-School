@@ -6,6 +6,7 @@ from .serializers import StudentAccountSerializer, TeacherAccountSerializer, Log
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
+from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -115,6 +116,7 @@ class TeacherAccountCreateView(AccountCreateView):
 
 
 
+login_page_front_end = "https://mamun700263.github.io/Ghor-School/login.html"
 def activate(request, uid64, token):
     try:
         uid = urlsafe_base64_decode(uid64).decode()
@@ -125,9 +127,9 @@ def activate(request, uid64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        return redirect(reverse_lazy('login'))
+        return HttpResponseRedirect(login_page_front_end)
     else:
-        return redirect(reverse_lazy('login'))
+        return HttpResponseRedirect(login_page_front_end)
 
 
 
