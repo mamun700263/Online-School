@@ -12,7 +12,6 @@ class SkillView(viewsets.ModelViewSet):
     permission_classes = [AllowAny] 
     queryset = SkillModel.objects.all()
     serializer_class = SkillSerializer
-
 class CourseView(APIView):
     serializer_class = CourseSerializer
 
@@ -20,7 +19,7 @@ class CourseView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             course = serializer.save()
-            recipient_list = [teacher.user.email for teacher in course.taken_by.all()]
+            recipient_list = [course.taken_by.user.email]  # Assuming single teacher; update if multiple teachers
             context = {'course': course}
             send_email(
                 subject="Course Upload Successful",

@@ -18,8 +18,8 @@ class CourseSerializer(serializers.ModelSerializer):
     """
     taken_by = serializers.PrimaryKeyRelatedField(
         queryset=TeacherAccount.objects.all(),
-        many=True, 
-        required=False ,
+        many=False, 
+        required=True ,
     )
 
     class Meta:
