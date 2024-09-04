@@ -9,12 +9,13 @@ class SkillModel(models.Model):
 
 
 
+
 class CourseModel(models.Model):
     name = models.CharField(max_length=120)
     taken_by = models.ManyToManyField(TeacherAccount)
-    thumbnail = models.ImageField(upload_to='skill/thumbnails')
+    thumbnail = models.URLField(null=True, blank=True)
     paid = models.BooleanField()
-    price = models.IntegerField(null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     time = models.IntegerField(help_text="Time in hours")
     rating = models.FloatField(default=0, null=True, blank=True)
 
