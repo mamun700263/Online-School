@@ -1,9 +1,7 @@
-
 from rest_framework import serializers
-
 from .models import SkillModel,CourseModel
-
 from accounts.models import TeacherAccount
+from accounts.serializers import TeacherAccountSerializer
 
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,6 +11,8 @@ class SkillSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    skills = SkillSerializer(many=True)  # This will return skill names, not just IDs
+    taken_by = TeacherAccountSerializer()  # This will return the full user object
     class Meta:
         model = CourseModel
         fields = ['name', 'description', 'skills', 'thumbnail', 'paid', 'price', 'time', 'rating', 'taken_by']

@@ -2,6 +2,9 @@ from django.db import models
 from accounts.models import TeacherAccount
 
 class SkillModel(models.Model):
+    """
+    this is just a skill and teachers can apply
+    """
     name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
