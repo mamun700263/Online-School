@@ -37,12 +37,11 @@ def send_email(subject, template_name, context, recipient_list):
 
 
 class ProfileView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]  # Uncomment to ensure only authenticated users can access
 
     def get(self, request):
         user = request.user
 
-        # Attempt to retrieve the user's associated StudentAccount or TeacherAccount
         try:
             account = StudentAccount.objects.get(user=user)
         except StudentAccount.DoesNotExist:
@@ -51,9 +50,12 @@ class ProfileView(APIView):
             except TeacherAccount.DoesNotExist:
                 return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Prepare the data to be returned in the response
         data = {
+            'id': user.id,
             'username': user.username,
+            'first_name':user.first_name,
+            'last_name': user.last_name,
+            'full_name': f"{user.first_name} {user.last_name}",
             'email': user.email,
             'mobile': getattr(account, 'mobile', ''),
             'date_of_birth': getattr(account, 'date_of_birth', ''),
@@ -62,6 +64,36 @@ class ProfileView(APIView):
         }
 
         return Response(data, status=status.HTTP_200_OK)
+
+    def patch(self, request):
+        user = request.user
+        try:
+            account = StudentAccount.objects.get(user=user)
+        except StudentAccount.DoesNotExist:
+            try:
+                account = TeacherAccount.objects.get(user=user)
+            except TeacherAccount.DoesNotExist:
+                return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
+        data = request.data
+        user.username = data.get('username', user.username)
+        user.first_name = data.get('first_name', user.first_name)
+        user.last_name = data.get('last_name', user.last_name)
+        user.email = data.get('email', user.email)
+        user.save()
+
+        account.mobile = data.get('mobile', account.mobile)
+        account.date_of_birth = data.get('date_of_birth', account.date_of_birth)
+        account.profile_picture = data.get('profile_picture', account.profile_picture)  
+        account.save()
+        return Response({'message': 'Profile updated successfully'}, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
 
 
 web_site = 'https://online-school-1wkk.onrender.com'

@@ -11,15 +11,8 @@ class SkillSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    skills = SkillSerializer(many=True)  # This will return skill names, not just IDs
-    taken_by = TeacherAccountSerializer()  # This will return the full user object
     class Meta:
         model = CourseModel
-        fields = ['name', 'description', 'skills', 'thumbnail', 'paid', 'price', 'time', 'rating', 'taken_by']
-        read_only_fields = ['taken_by', 'rating']
+        fields = ['name','taken_by','description','skills','thumbnail','paid','price','time','rating']
+        read_only_fields = ['rating','taken_by']  # teacher can't add rating
 
-    def create(self, validated_data):
-        request = self.context.get('request', None)
-        if request and request.user.is_authenticated:
-            validated_data['taken_by'] = request.user.teacher_profile  
-        return super().create(validated_data)

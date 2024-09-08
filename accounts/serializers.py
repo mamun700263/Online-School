@@ -16,15 +16,10 @@ class BaseUserSerializer(serializers.ModelSerializer):
     def validate(self, data):
         password = data.get('password')
         confirm_password = data.get('confirm_password')
-
-        # Check if passwords match
         if password != confirm_password:
             raise serializers.ValidationError({"confirm_password": "Passwords must match."})
-
-        # Check if the email already exists
         if User.objects.filter(email=data.get('email')).exists():
             raise serializers.ValidationError({"email": "Email is already in use."})
-
         return data
 
     def create(self, validated_data):
