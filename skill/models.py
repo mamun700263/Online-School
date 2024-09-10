@@ -13,8 +13,9 @@ class SkillModel(models.Model):
 
     
 class CourseModel(models.Model):
+    print('model')
     name = models.CharField(max_length=120)
-    taken_by = models.ForeignKey(TeacherAccount, on_delete=models.CASCADE, related_name='account',null = True)
+    taken_by = models.ForeignKey(TeacherAccount, on_delete=models.CASCADE, related_name='account',default=1)
     description = models.TextField(default="description")  
     skills = models.ManyToManyField(SkillModel)  
     thumbnail = models.URLField(null=True, blank=True)

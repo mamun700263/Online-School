@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ["*"]#it is  open to every one
 CORS_ALLOWED_ORIGINS = [
     "https://online-school-1wkk.onrender.com",
     "https://mamun700263.github.io",
+    'http://192.168.0.108:5501',
     "http://localhost:3000",
     "http://192.168.0.108:5500",
     'http://127.0.0.1:8000',  # Corrected syntax for local development
@@ -69,14 +70,16 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+
 ]
 
 

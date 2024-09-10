@@ -17,7 +17,8 @@ from rest_framework.permissions import IsAuthenticated
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from rest_framework import generics
-
+from skill.models import CourseModel
+from skill.serializers import CourseSerializer
 def send_email(subject, template_name, context, recipient_list):
     """
     Let's use it where ever it needs 
@@ -43,17 +44,19 @@ class ProfileView(APIView):
         user = request.user
 
         try:
-            account = StudentAccount.objects.get(user=user)
-        except StudentAccount.DoesNotExist:
-            try:
-                account = TeacherAccount.objects.get(user=user)
-            except TeacherAccount.DoesNotExist:
-                return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
+            account = TeacherAccount.objects.get(user=user)
+        except TeacherAccount.DoesNotExist:
+            return Response({'error': 'Teacher account not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        courses = CourseModel.objects.filter(taken_by=account)
+        
+        # Serialize course data
+        serializer = CourseSerializer(courses, many=True)
 
         data = {
             'id': user.id,
             'username': user.username,
-            'first_name':user.first_name,
+            'first_name': user.first_name,
             'last_name': user.last_name,
             'full_name': f"{user.first_name} {user.last_name}",
             'email': user.email,
@@ -61,10 +64,13 @@ class ProfileView(APIView):
             'date_of_birth': getattr(account, 'date_of_birth', ''),
             'unique_id': getattr(account, 'unique_id', ''),
             'profile_picture': getattr(account, 'profile_picture', ''),
+            'courses': serializer.data,  # Use serialized data
         }
 
         return Response(data, status=status.HTTP_200_OK)
+    
 
+    
     def patch(self, request):
         user = request.user
         try:
@@ -74,6 +80,7 @@ class ProfileView(APIView):
                 account = TeacherAccount.objects.get(user=user)
             except TeacherAccount.DoesNotExist:
                 return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
+        
         data = request.data
         user.username = data.get('username', user.username)
         user.first_name = data.get('first_name', user.first_name)
@@ -85,11 +92,8 @@ class ProfileView(APIView):
         account.date_of_birth = data.get('date_of_birth', account.date_of_birth)
         account.profile_picture = data.get('profile_picture', account.profile_picture)  
         account.save()
+
         return Response({'message': 'Profile updated successfully'}, status=status.HTTP_200_OK)
-
-
-
-
 
 
 
