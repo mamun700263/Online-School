@@ -114,35 +114,6 @@ class CourseListView(generics.ListAPIView):
 
 
 
-
-
-
-
-
-    
-    def patch(self, request):
-        user = request.user
-        try:
-            account = CourseModel.objects.get(user=user)
-        except CourseModel.DoesNotExist:
-            return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
-        data = request.data
-        print(data)
-        # user.username = data.get('username', user.username)
-        # user.first_name = data.get('first_name', user.first_name)
-        # user.last_name = data.get('last_name', user.last_name)
-        # user.email = data.get('email', user.email)
-        # user.save()
-
-        # account.mobile = data.get('mobile', account.mobile)
-        # account.date_of_birth = data.get('date_of_birth', account.date_of_birth)
-        # account.profile_picture = data.get('profile_picture', account.profile_picture)  
-        # account.save()
-        # return Response({'message': 'Profile updated successfully'}, status=status.HTTP_200_OK)
-
-
-
-
 class CourseDetailView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]  
     serializer_class = CourseSerializer
@@ -157,3 +128,40 @@ class CourseDetailView(generics.RetrieveAPIView):
 
         serializer = self.serializer_class(course)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def delete(self, request, course_id):
+        try:
+            course = CourseModel.objects.get(id=course_id)
+            course.delete()
+            return Response({'message': 'Course deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+        except CourseModel.DoesNotExist:
+            return Response({'error': 'Course not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+
+class CourseUpdateView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CourseSerializer
+    queryset = CourseModel.objects.all()
+
+    def patch(self, request, *args, **kwargs):
+        course_id = kwargs.get('pk')  # Get the course ID from the URL
+        print('pahcj')
+        try:
+            print('in th etry pahcj')
+            course = CourseModel.objects.get(id=course_id)
+            print(course)
+        except CourseModel.DoesNotExist:
+            print('in th ex pahcj')
+            return Response({'error': 'Course not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Partial update
+        serializer = self.serializer_class(course, data=request.data, partial=True)
+        print('halaljkdaflkjsa')
+        if serializer.is_valid():
+            print('ehe',serializer.data)
+            serializer.save()
+            return Response({'message': 'Course updated successfully'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
