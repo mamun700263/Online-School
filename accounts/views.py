@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import StudentAccount, TeacherAccount
+from .models import StudentAccount, TeacherAccount,Account
 from .serializers import StudentAccountSerializer, TeacherAccountSerializer, LoginSerializer
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -19,6 +19,10 @@ from django.template.loader import render_to_string
 from rest_framework import generics
 from skill.models import CourseModel
 from skill.serializers import CourseSerializer
+
+
+
+
 def send_email(subject, template_name, context, recipient_list):
     """
     Let's use it where ever it needs 
@@ -36,23 +40,23 @@ def send_email(subject, template_name, context, recipient_list):
     email.content_subtype = "html"  # eta na dile code jabe
     email.send()
 
-
 class ProfileView(APIView):
-    permission_classes = [IsAuthenticated]  # Uncomment to ensure only authenticated users can access
+    permission_classes = [IsAuthenticated]  # Ensure only authenticated users can access
 
     def get(self, request):
         user = request.user
+        account = Account.objects.get(user=user)
+        u_id = getattr(account, 'unique_id', '')
+        
+        # Check if the user is a student or teacher based on the prefix of the unique_id
+        if u_id.startswith("ST"):  # For student
+            courses = CourseModel.objects.filter(students=account)  # Enrolled courses for student
+        elif u_id.startswith("TE"):  # For teacher
+            courses = CourseModel.objects.filter(taken_by=account)  # Courses taught by teache
 
-        try:
-            account = TeacherAccount.objects.get(user=user)
-        except TeacherAccount.DoesNotExist:
-            return Response({'error': 'Teacher account not found'}, status=status.HTTP_404_NOT_FOUND)
-        
-        courses = CourseModel.objects.filter(taken_by=account)
-        
-        # Serialize course data
+        # Serialize the course data
         serializer = CourseSerializer(courses, many=True)
-
+        print(courses)
         data = {
             'id': user.id,
             'username': user.username,
@@ -66,11 +70,8 @@ class ProfileView(APIView):
             'profile_picture': getattr(account, 'profile_picture', ''),
             'courses': serializer.data,  # Use serialized data
         }
-
         return Response(data, status=status.HTTP_200_OK)
-    
 
-    
     def patch(self, request):
         user = request.user
         try:
@@ -80,7 +81,7 @@ class ProfileView(APIView):
                 account = TeacherAccount.objects.get(user=user)
             except TeacherAccount.DoesNotExist:
                 return Response({'error': 'Account not found'}, status=status.HTTP_404_NOT_FOUND)
-        
+
         data = request.data
         user.username = data.get('username', user.username)
         user.first_name = data.get('first_name', user.first_name)
@@ -90,7 +91,7 @@ class ProfileView(APIView):
 
         account.mobile = data.get('mobile', account.mobile)
         account.date_of_birth = data.get('date_of_birth', account.date_of_birth)
-        account.profile_picture = data.get('profile_picture', account.profile_picture)  
+        account.profile_picture = data.get('profile_picture', account.profile_picture)
         account.save()
 
         return Response({'message': 'Profile updated successfully'}, status=status.HTTP_200_OK)
@@ -98,9 +99,8 @@ class ProfileView(APIView):
 
 
 
-
-
 web_site = 'https://online-school-1wkk.onrender.com'
+# web_site = 'http://127.0.0.1:8000'
 
 class UserLogout(APIView):
     permission_classes = [IsAuthenticated]

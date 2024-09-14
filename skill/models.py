@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import TeacherAccount
+from accounts.models import TeacherAccount,StudentAccount
 
 class SkillModel(models.Model):
     """
@@ -16,6 +16,7 @@ class CourseModel(models.Model):
     print('model')
     name = models.CharField(max_length=120)
     taken_by = models.ForeignKey(TeacherAccount, on_delete=models.CASCADE, related_name='account',default=1)
+    students = models.ManyToManyField(StudentAccount, related_name='enrolled_courses', blank=True)
     description = models.TextField(default="description")  
     skills = models.ManyToManyField(SkillModel)  
     thumbnail = models.URLField(null=True, blank=True)
@@ -26,3 +27,13 @@ class CourseModel(models.Model):
 
     def __str__(self):
         return f"{self.name} taken by {self.taken_by.user.first_name} {self.taken_by.user.last_name}"
+
+
+
+
+class Enrollment(models.Model):
+    user = models.ForeignKey(StudentAccount, on_delete=models.CASCADE)
+    course = models.ForeignKey(CourseModel, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'course')

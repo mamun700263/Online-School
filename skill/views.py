@@ -2,12 +2,14 @@ from rest_framework import viewsets, generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import api_view, permission_classes
+from django.shortcuts import get_object_or_404
 
 from .serializers import SkillSerializer, CourseSerializer
-from .models import SkillModel, CourseModel
-from accounts.models import TeacherAccount
+from .models import SkillModel, CourseModel,Enrollment
+from accounts.models import TeacherAccount,StudentAccount
 from accounts.views import send_email
-
 
 
 
@@ -18,10 +20,6 @@ class SkillView(viewsets.ModelViewSet):
     permission_classes = [AllowAny] 
     queryset = SkillModel.objects.all()
     serializer_class = SkillSerializer
-    
-    
-    
-    
 
 
 class CourseView(APIView):
@@ -29,9 +27,6 @@ class CourseView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        print("Request Data:", request.data)
-        print("User:", request.user)
-        print("User id:", request.user.account.id)
 
         data = request.data.copy()
         data['taken_by'] = request.user.account.id
@@ -96,21 +91,19 @@ class SkillListView(ListView):
 
 
 class CourseListView(generics.ListAPIView):
-    
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['name', 'price']  # Optional: add more filterable fields
     authentication_classes = []  # Allow any user (even unauthenticated users)
     permission_classes = [AllowAny]  # No special permissions required
     serializer_class = CourseSerializer
 
-    # Override get_queryset to add filtering logic
     def get_queryset(self):
         queryset = CourseModel.objects.all()
-        print(queryset)
         skill_id = self.request.query_params.get('skill_id', None)
         if skill_id:
-            # Filter courses by the skill's ID
             queryset = queryset.filter(skills__id=skill_id)
         return queryset
-    
+
 
 
 
@@ -129,16 +122,6 @@ class CourseDetailView(generics.RetrieveAPIView):
         serializer = self.serializer_class(course)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def delete(self, request, course_id):
-        try:
-            course = CourseModel.objects.get(id=course_id)
-            course.delete()
-            return Response({'message': 'Course deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
-        except CourseModel.DoesNotExist:
-            return Response({'error': 'Course not found'}, status=status.HTTP_404_NOT_FOUND)
-
-
-
 
 
 class CourseUpdateView(generics.UpdateAPIView):
@@ -147,21 +130,54 @@ class CourseUpdateView(generics.UpdateAPIView):
     queryset = CourseModel.objects.all()
 
     def patch(self, request, *args, **kwargs):
-        course_id = kwargs.get('pk')  # Get the course ID from the URL
-        print('pahcj')
+        course_id = kwargs.get('pk')
         try:
-            print('in th etry pahcj')
             course = CourseModel.objects.get(id=course_id)
-            print(course)
         except CourseModel.DoesNotExist:
-            print('in th ex pahcj')
             return Response({'error': 'Course not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Partial update
+        if course.taken_by.user != request.user.account.user:
+            return Response({'error': 'You do not have permission to update this course'}, status=status.HTTP_403_FORBIDDEN)
+
         serializer = self.serializer_class(course, data=request.data, partial=True)
-        print('halaljkdaflkjsa')
+        
         if serializer.is_valid():
-            print('ehe',serializer.data)
             serializer.save()
-            return Response({'message': 'Course updated successfully'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Course updated successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, *args, **kwargs):
+        course_id = kwargs.get('pk')
+        try:
+            course = CourseModel.objects.get(id=course_id)
+            course.delete()
+            return Response({'message': 'Course deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
+        except CourseModel.DoesNotExist:
+            return Response({'error': 'Course not found'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def enroll_course(request, course_id):
+    account = StudentAccount.objects.get(user = request.user)
+    user = request.user
+    # Ensure the user has an associated StudentAccount
+    try:
+        student_account = StudentAccount.objects.get(user=user)
+
+    except StudentAccount.DoesNotExist:
+        return Response({'error': 'User account not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    course = get_object_or_404(CourseModel, id=course_id)
+    
+    # Check if the user is already enrolled in the course
+    if course.students.filter(id=user.id).exists():
+        return Response({'success': False, 'message': 'Already enrolled.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Add the user to the many-to-many relationship
+    course.students.add(account)
+    
+    # Create a new enrollment record
+    Enrollment.objects.create(user=student_account, course=course)
+    
+    return Response({'success': True}, status=status.HTTP_201_CREATED)

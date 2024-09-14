@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import SkillView, CourseView, SkillListView, CourseListView, CourseDetailView, CourseUpdateView
+from .views import SkillView, CourseView, SkillListView, CourseListView, CourseDetailView, CourseUpdateView,enroll_course
 
 
 router = DefaultRouter()
@@ -20,4 +20,8 @@ urlpatterns = [
 
     # API views for Skills
     path('skills/list/', SkillListView.as_view(), name='list-skills'),
+
+
+    #Api views for enrollment
+    path('enroll/<int:course_id>/', enroll_course, name='enroll_course'),
 ]
