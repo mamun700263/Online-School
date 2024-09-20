@@ -190,25 +190,6 @@ EMAIL_HOST_USER = env("email_to_send")
 EMAIL_HOST_PASSWORD = env("host_pass") 
 
 
-#this past is for securing my apis
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.TokenAuthentication',
-#         # Add other authentication classes if needed
-#     ],
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#     ],
-# }
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.SessionAuthentication',
-#         'rest_framework.authentication.TokenAuthentication',
-#     ],
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.AllowAny',
-#     ],
-# }
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -216,6 +197,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
+#this past is for securing my apis
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_AUTHENTICATION_CLASSES': [
