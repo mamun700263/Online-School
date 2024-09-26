@@ -1,7 +1,8 @@
-from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework import status,generics
+from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
 from .models import StudentAccount, TeacherAccount,Account
 from .serializers import StudentAccountSerializer, TeacherAccountSerializer, LoginSerializer
 from django.contrib.auth.tokens import default_token_generator
@@ -12,11 +13,8 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login as auth_login
-from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from rest_framework import generics
 from skill.models import CourseModel
 from skill.serializers import CourseSerializer
 
@@ -58,6 +56,7 @@ class ProfileView(APIView):
         serializer = CourseSerializer(courses, many=True)
         print(courses)
         data = {
+            'account_id':user.account.id,
             'id': user.id,
             'username': user.username,
             'first_name': user.first_name,
@@ -68,7 +67,7 @@ class ProfileView(APIView):
             'date_of_birth': getattr(account, 'date_of_birth', ''),
             'unique_id': getattr(account, 'unique_id', ''),
             'profile_picture': getattr(account, 'profile_picture', ''),
-            'courses': serializer.data,  # Use serialized data
+            'courses': serializer.data,  
         }
         return Response(data, status=status.HTTP_200_OK)
 
@@ -114,6 +113,7 @@ class UserLogout(APIView):
 class UserLoginApiView(APIView):
     authentication_classes = [] 
     permission_classes = [AllowAny] 
+    
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         

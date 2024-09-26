@@ -24,10 +24,8 @@ class Account(models.Model):
             )
             self.user.set_password(self.password)
             self.user.save()
-
         if not self.unique_id:
             self.unique_id = self.generate_unique_id()
-
         super().save(*args, **kwargs)
 
     def generate_unique_id(self):

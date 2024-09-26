@@ -110,20 +110,20 @@ WSGI_APPLICATION = 'Final.wsgi.application'
 # Replace the SQLite DATABASES configuration with PostgreSQL:
 
 
-DATABASES = {
-    'default': dj_database_url.config(        # Replace this value with your local database's connection string.     
-    default='postgresql://online_school_db_bapv_user:xju23KJpjnglR5n3J1rggLnlxgsm9NZ7@dpg-cragq1tds78s73cru0dg-a.oregon-postgres.render.com/online_school_db_bapv',
-    conn_max_age=600
-    )}
-
-
-
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+#     'default': dj_database_url.config(        # Replace this value with your local database's connection string.     
+#     default='postgresql://online_school_db_bapv_user:xju23KJpjnglR5n3J1rggLnlxgsm9NZ7@dpg-cragq1tds78s73cru0dg-a.oregon-postgres.render.com/online_school_db_bapv',
+#     conn_max_age=600
+#     )}
+
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # DATABASES = {
 #     'default': {

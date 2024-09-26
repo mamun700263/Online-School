@@ -4,6 +4,7 @@ from .models import ReviewModel
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewModel
-        fields = "__all__"
+        fields = ['id','rating','text','course','given_by']
+        read_only_fields = ['id']
 
 
