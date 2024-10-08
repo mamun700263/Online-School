@@ -7,14 +7,14 @@ class SkillModel(models.Model):
     this is just a skill and teachers can apply
     """
     name = models.CharField(max_length=50, unique=True)
-
+    thumbnail = models.URLField(null=True, blank=True)
     def __str__(self):
         return self.name
     
 
     
 class CourseModel(models.Model):
-    name = models.CharField(max_length=120)
+    name = models.CharField(max_length=80)
     taken_by = models.ForeignKey(TeacherAccount, on_delete=models.CASCADE, related_name='account',default=1)
     students = models.ManyToManyField(StudentAccount, related_name='enrolled_courses', blank=True)
     description = models.TextField(default="description")  

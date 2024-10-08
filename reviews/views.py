@@ -11,24 +11,34 @@ from .models import ReviewModel
 
 
 
+
+
+
+
+
 class ReviewView(APIView):
-    authentication_classes = [] 
-    permission_classes = [AllowAny] 
+    permission_classes = [IsAuthenticated]
     serializer_class = ReviewSerializer
-    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
+    serializer_class = ReviewSerializer
     def get(self, request):
         reviews = ReviewModel.objects.all()
         review_serializer = ReviewSerializer(reviews, many=True)
-        # print('the problem is here')
         return Response(review_serializer.data)
 
     def post(self, request):
-        data = request.data.copy()
-        serializer = self.serializer_class(data=data)
+        account = StudentAccount.objects.get(user = self.request.user)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'Review given  successfully!'}, status=status.HTTP_201_CREATED)
+            serializer.save(given_by=account)  
+            print(serializer)
+            return Response({'message': 'Review given successfully!'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class ReviewDeatil(APIView):

@@ -31,7 +31,7 @@ class CourseSerializer(serializers.ModelSerializer):
         # Override the rating field to reflect the average rating
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['rating'] = representation.pop('average_rating')  
+        representation['rating'] = representation.pop('average_rating')
         return representation
     
     def get_skills_list(self, obj):
