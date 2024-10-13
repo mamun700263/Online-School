@@ -7,8 +7,8 @@ class ReviewSerializer(serializers.ModelSerializer):
     course_name = serializers.SerializerMethodField()
     class Meta:
         model = ReviewModel
-        fields = ['id','rating','text','course','given_by','given_by_name','given_by_img','course_name']
-        read_only_fields = ['id','given_by_name','given_by_img','course_name']
+        fields = ['id','rating','text','course','given_by','given_by_name','given_by_img','course_name','time']
+        read_only_fields = ['id','given_by_name','given_by_img','course_name','time']
 
     def get_given_by_name(self, obj):
         return f"{obj.given_by.user.first_name}  {obj.given_by.user.last_name}"  

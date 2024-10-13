@@ -98,8 +98,8 @@ class ProfileView(APIView):
 
 
 
-web_site = 'https://online-school-1wkk.onrender.com'
-# web_site = 'http://127.0.0.1:8000'
+# web_site = 'https://online-school-1wkk.onrender.com'
+web_site = 'http://127.0.0.1:8000'
 
 class UserLogout(APIView):
     permission_classes = [IsAuthenticated]
@@ -187,7 +187,8 @@ class TeacherAccountCreateView(AccountCreateView):
 
 
 
-login_page_front_end = "https://mamun700263.github.io/Ghor-School/login.html"
+# login_page_front_end = "https://mamun700263.github.io/Ghor-School/login.html"
+login_page_front_end = "http://192.168.0.102:5501/login.html"
 
 def activate(request, uid64, token):
     try:
