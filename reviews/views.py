@@ -37,7 +37,7 @@ class ReviewView(APIView):
     def post(self, request):
         try:
             account = get_object_or_404(StudentAccount, user=self.request.user)
-            
+            print(account)
             # Check if the account is valid (ensuring the user is a student)
             if account is None:
                 return Response({'error': 'Only students can give reviews.'}, status=status.HTTP_403_FORBIDDEN)
@@ -60,7 +60,10 @@ class ReviewView(APIView):
             return Response({'error': 'Validation error', 'details': ve.detail}, status=status.HTTP_400_BAD_REQUEST)
         
         except Exception as e:
-            return Response({'error': 'Something went wrong.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            print(Exception)
+            return Response({'error': 'Teachers cant review'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 class ReviewDeatil(APIView):
     permission_classes = [IsAuthenticated]
