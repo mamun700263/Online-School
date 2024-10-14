@@ -15,9 +15,7 @@ from django.shortcuts import get_object_or_404
 
 
 
-
-
-
+from rest_framework.exceptions import ValidationError
 
 class ReviewView(APIView):
     permission_classes = [IsAuthenticated]
@@ -39,17 +37,22 @@ class ReviewView(APIView):
     def post(self, request):
         try:
             account = get_object_or_404(StudentAccount, user=self.request.user)
-
+            
             # Check if the account is valid (ensuring the user is a student)
             if account is None:
                 return Response({'error': 'Only students can give reviews.'}, status=status.HTTP_403_FORBIDDEN)
+            
+            # Check if the user has already given a review
+            existing_review = ReviewModel.objects.filter(given_by=account).first()
+            if existing_review:
+                return Response({'error': 'You have already submitted a review.'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Validate the submitted review data
             serializer = self.serializer_class(data=request.data)
             if serializer.is_valid():
                 serializer.save(given_by=account)
                 return Response({'message': 'Review given successfully!'}, status=status.HTTP_201_CREATED)
-            
+
             # If validation fails, return error details
             return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -58,7 +61,6 @@ class ReviewView(APIView):
         
         except Exception as e:
             return Response({'error': 'Something went wrong.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class ReviewDeatil(APIView):
     permission_classes = [IsAuthenticated]
