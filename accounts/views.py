@@ -102,7 +102,7 @@ class ProfileView(APIView):
 
 
 # web_site = 'https://online-school-1wkk.onrender.com'
-web_site = 'http://127.0.0.1:8000'
+web_site = 'http://192.168.0.103:5501/'
 
 class UserLogout(APIView):
     permission_classes = [IsAuthenticated]
