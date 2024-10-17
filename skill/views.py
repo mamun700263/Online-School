@@ -31,10 +31,8 @@ class CourseView(APIView):
         data['taken_by'] = request.user.account.id
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
-            print(serializer.validated_data)
             course = serializer.save()
             recipient_list = [request.user.email]
-            print(recipient_list)
             context = {'course': course}
             send_email(
                 subject="Course Upload Successful",
@@ -105,7 +103,6 @@ class CourseDetailView(generics.RetrieveAPIView):
     queryset = CourseModel.objects.all()  
 
     def get(self, request, pk):
-        print('hello',pk)
         try:
             course = CourseModel.objects.get(id=pk)
         except CourseModel.DoesNotExist:
@@ -125,28 +122,46 @@ class CourseUpdateView(APIView):
     renderer_classes = [BrowsableAPIRenderer, JSONRenderer]  # Add this line
 
     def get(self, request, pk):
+        print('get')
         try:
             course = CourseModel.objects.get(id=pk)
         except CourseModel.DoesNotExist:
             return Response({'error': 'Course not found'}, status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(course)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     def patch(self, request, *args, **kwargs):
+        print('hell')
         course_id = kwargs.get('pk')
+        
         try:
+            pre_skill = []
             course = CourseModel.objects.get(id=course_id)
+            for skill in course.skills.all():
+                pre_skill.append(skill.id)
+                print(skill.id)
         except CourseModel.DoesNotExist:
             return Response({'error': 'Course not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        # print(course.taken_by.user.id, request.user.account.user.id)
+        
+        # Check if the user has permission to update the course
         if course.taken_by.user.id != request.user.account.user.id:
             return Response({'error': 'You do not have permission to update this course'}, status=status.HTTP_403_FORBIDDEN)
-        serializer = self.serializer_class(course, data=request.data, partial=True)
+        
+        # Make request.data mutable to allow modifications
+        request_data = request.data.copy()
 
+        # Check if 'skills' is empty, and if so, assign pre_skill
+        if not request_data.get('skills'):
+            request_data['skills'] = pre_skill
+
+        print(request_data['skills'])
+
+        # Serialize and update the course data
+        serializer = self.serializer_class(course, data=request_data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'Course updated successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):

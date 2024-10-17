@@ -64,14 +64,17 @@ class ProfileView(APIView):
             'full_name': f"{user.first_name} {user.last_name}",
             'email': user.email,
             'mobile': getattr(account, 'mobile', ''),
-            'date_of_birth': getattr(account, 'date_of_birth', ''),
+            'date_of_birth': getattr(account, 'date_of_birth','2000-01-01'),
             'unique_id': getattr(account, 'unique_id', ''),
             'profile_picture': getattr(account, 'profile_picture', ''),
             'courses': serializer.data,  
         }
         return Response(data, status=status.HTTP_200_OK)
 
+
+
     def patch(self, request):
+        print("debut the pathch of profile update")
         user = request.user
         try:
             account = StudentAccount.objects.get(user=user)

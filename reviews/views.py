@@ -5,7 +5,7 @@ from rest_framework import viewsets, generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from accounts.models import StudentAccount
-from skill.models import CourseModel
+from skill.models import CourseModel,Enrollment
 from .serializers import ReviewSerializer
 from .models import ReviewModel
 from django.shortcuts import get_object_or_404
@@ -33,34 +33,53 @@ class ReviewView(APIView):
             return Response(review_serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': 'Unable to fetch reviews at the moment.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
     def post(self, request):
+        print(request.data)
         try:
+            # Get the student account for the logged-in user
             account = get_object_or_404(StudentAccount, user=self.request.user)
-            print(account)
-            # Check if the account is valid (ensuring the user is a student)
-            if account is None:
+            # taccount = get_object_or_404(StudentAccount, user=self.request.user)
+
+            # if taccount:
+            #     return Response({'error': 'Only students can give reviews.'}, status=status.HTTP_403_FORBIDDEN)
+
+            # Ensure the user is a student
+            if not account:
                 return Response({'error': 'Only students can give reviews.'}, status=status.HTTP_403_FORBIDDEN)
-            
-            # Check if the user has already given a review
-            existing_review = ReviewModel.objects.filter(given_by=account).first()
+
+            course_id = request.data.get('course')
+            if not course_id:
+                return Response({'error': 'Course ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Fetch the course based on the course_id
+            course = get_object_or_404(CourseModel, id=course_id)
+
+            # Check if the student is enrolled in the course
+            enrolled = Enrollment.objects.filter(user=account, course=course).exists()
+            print(f"Enrollment check: user={account}, course={course}, enrolled={enrolled}")  # Debugging output
+
+            if not enrolled:
+                return Response({'error': 'Only enrolled students can give reviews.'}, status=status.HTTP_403_FORBIDDEN)
+
+            # Check if the student has already given a review for this course
+            existing_review = ReviewModel.objects.filter(given_by=account, course=course).first()
             if existing_review:
-                return Response({'error': 'You have already submitted a review.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'You have already submitted a review for this course.'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Validate the submitted review data
             serializer = self.serializer_class(data=request.data)
             if serializer.is_valid():
-                serializer.save(given_by=account)
+                serializer.save(given_by=account, course=course)
                 return Response({'message': 'Review given successfully!'}, status=status.HTTP_201_CREATED)
 
-            # If validation fails, return error details
+            # Return error if validation fails
             return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         except ValidationError as ve:
             return Response({'error': 'Validation error', 'details': ve.detail}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         except Exception as e:
-            print(Exception)
+            print(f"Error: {e}")  # Add better exception logging
             return Response({'error': 'Teachers cant review'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -83,6 +102,7 @@ class ReviewDeatil(APIView):
 
     def patch(self, request, *args, **kwargs):
         review_id = kwargs.get('pk')
+        
         try:
             review = ReviewModel.objects.get(id=review_id)
             print('try patch reviewdetail veiw found',review)
