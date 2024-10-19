@@ -102,7 +102,7 @@ class ProfileView(APIView):
 
 
 # web_site = 'https://online-school-1wkk.onrender.com'
-web_site = 'http://192.168.0.103:5501/'
+web_site = 'http://127.0.0.1:8000/'
 
 class UserLogout(APIView):
     permission_classes = [IsAuthenticated]
@@ -138,11 +138,8 @@ class UserLoginApiView(APIView):
 
 
 
-
-
-
 class AccountCreateView(APIView):
-    serializer_class = None  # I will set this int the classes
+    serializer_class = None  # I will set this in the classes
     authentication_classes = [] 
     permission_classes = [AllowAny] 
 
@@ -156,7 +153,7 @@ class AccountCreateView(APIView):
             # Generate email confirmation token and link
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            confirm_link = f"{web_site}/accounts/activate/{uid}/{token}"
+            confirm_link = f"{web_site.rstrip('/')}/accounts/activate/{uid}/{token}"
 
             # Prepare email context
             context = {'confirm_link': confirm_link, 'user': user}
@@ -179,8 +176,6 @@ class AccountCreateView(APIView):
 
 
 
-
-
 class StudentAccountCreateView(AccountCreateView):
     serializer_class = StudentAccountSerializer
 
@@ -191,7 +186,7 @@ class TeacherAccountCreateView(AccountCreateView):
 
 
 # login_page_front_end = "https://mamun700263.github.io/Ghor-School/login.html"
-login_page_front_end = "http://192.168.0.102:5501/login.html"
+login_page_front_end = "http://192.168.0.103:5501/login.html"
 
 def activate(request, uid64, token):
     try:
