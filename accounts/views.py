@@ -185,8 +185,8 @@ class TeacherAccountCreateView(AccountCreateView):
 
 
 
-# login_page_front_end = "https://mamun700263.github.io/Ghor-School/login.html"
-login_page_front_end = "http://192.168.0.103:5501/login.html"
+login_page_front_end = "https://mamun700263.github.io/Ghor-School/login.html"
+# login_page_front_end = "http://192.168.0.103:5501/login.html"
 
 def activate(request, uid64, token):
     try:
