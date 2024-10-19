@@ -100,9 +100,9 @@ class ProfileView(APIView):
 
 
 
-
-# web_site = 'https://online-school-1wkk.onrender.com'
-web_site = 'http://127.0.0.1:8000/'
+#this links are of the backend for email
+web_site = 'https://online-school-lac.vercel.app/'
+# web_site = 'http://127.0.0.1:8000/'
 
 class UserLogout(APIView):
     permission_classes = [IsAuthenticated]
