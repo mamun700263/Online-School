@@ -5,7 +5,7 @@ import uuid
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='account')
     date_of_birth = models.DateField(blank=True, null=True)
-    unique_id = models.CharField(unique=True,  max_length=12,null=True,blank=True)
+    unique_id = models.CharField(unique=True,  max_length=11,null=True,blank=True)
     bio = models.TextField(blank=True, null=True)
     mobile = models.CharField(max_length=12, blank=True, null=True)
     profile_picture = models.URLField(blank=True, null=True,default="https://i.ibb.co.com/zHJyw5w/User-Profile-PNG-Clipart.png")  
