@@ -1,109 +1,88 @@
-# ========================
-# 🚀 Elite Django .gitignore
-# ========================
-
-# --- Python ---
+# =========================
+# 🐍 Python
+# =========================
 __pycache__/
 *.py[cod]
+*.so
 *.pyo
-*.pyd
-*.pyc
-.Python
-*.cover
-*.log
-*.pot
-*.py,cover
+*.egg-info/
+.eggs/
+dist/
+build/
+*.whl
 
-# --- Django ---
-*.sqlite3
-*.log
-db.sqlite3
-local_settings.py
-settings/local.py
+# =========================
+# 🔒 Environment & secrets
+# =========================
 .env
 .env.*
-.envrc
-*.env
-*.secret
-/secrets.json
-/media/
-/staticfiles/
-/static_root/
-/media_root/
-celerybeat-schedule
-*.mo
-*.pot
+local_settings.py
+settings_local.py
 
-# --- Migrations (optional: ignore only initial) ---
-**/migrations/
-!**/migrations/__init__.py
-
-# --- Virtual Environments ---
-venv/
-ENV/
-env/
-.venv/
-
-# --- IDEs & Editors ---
-.vscode/
-.idea/
-*.sublime-workspace
-*.sublime-project
-*.swp
-
-# --- OS Files ---
-.DS_Store
-Thumbs.db
-ehthumbs.db
-desktop.ini
-*.bak
-
-# --- Node / Frontend (if applicable) ---
-node_modules/
-*.tgz
-package-lock.json
-yarn.lock
-.pnpm-debug.log
-.npm/
-
-# --- Coverage / Testing ---
+# =========================
+# 🧪 Testing & coverage
+# =========================
+.pytest_cache/
 .coverage
 coverage.xml
 htmlcov/
 .tox/
-.nox/
-.pytest_cache/
-
-# --- Git ---
-.gitignore
-.gitattributes
-
-# --- Build / Dist ---
-*.egg
-*.egg-info/
-dist/
-build/
-pip-wheel-metadata/
-*.whl
-
-# --- Docker / Deployment ---
-docker-compose.override.yml
-*.pid
+nosetests.xml
 *.log
-*.sock
 
-# --- Celery ---
+# =========================
+# ⚙️ Virtual environments
+# =========================
+venv/
+env/
+.venv/
+
+# =========================
+# 🧰 IDE / editor
+# =========================
+.vscode/
+.idea/
+*.iml
+*.swp
+*.bak
+
+# =========================
+# 🗃 Database & uploads
+# =========================
+*.sqlite3
+db.sqlite3
+media/
+
+# =========================
+# 📦 Django static (generated)
+# =========================
+staticfiles/
+
+# =========================
+# 🐳 Docker / Celery
+# =========================
+celerybeat-schedule
 celerybeat.pid
+*.pid
 
-# --- Snapshots ---
-*.dump
-*.sql
+# =========================
+# 🔐 Certificates
+# =========================
+*.pem
+*.crt
+*.key
+*.pub
 
-# --- Black / Formatting ---
-.pyre/
+# =========================
+# 🧠 Type checkers / linters
+# =========================
 .mypy_cache/
-ruff_cache/
+.ruff_cache/
+.pyright/
 
-# ========================
-# 🔐 Stay Secure. Stay Sharp.
-# ========================
+# =========================
+# 🖥 OS junk
+# =========================
+.DS_Store
+.Trash-*
+*~
