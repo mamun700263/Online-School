@@ -9,46 +9,47 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+
 import dj_database_url
-import environ
-env = environ.Env()
-environ.Env.read_env()
-from pathlib import Path
+# from decouple import os.getenv
+from dotenv import load_dotenv
+
+load_dotenv()
 import os
+from pathlib import Path
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-PORT = os.environ.get('PORT', 8000)
+PORT = os.environ.get("PORT", 8000)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY") 
+SECRET_KEY = os.getenv("SECRET_KEY")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]#it is  open to every one
+ALLOWED_HOSTS = ["*"]
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://192.168.0.108:5500",
-#     #add others
-# ]
+
 CORS_ALLOWED_ORIGINS = [
     "https://online-school-1wkk.onrender.com",
     "https://mamun700263.github.io",
-    'http://192.168.0.108:5501',
+    "http://192.168.0.108:5501",
     "http://localhost:3000",
     "http://192.168.0.108:5500",
-    'http://127.0.0.1:8000',  # Corrected syntax for local development
+    "http://127.0.0.1:8000",
 ]
 
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://online-school-1wkk.onrender.com',
-    'http://localhost:3000',
-    'http://192.168.0.108:5500',
-    'http://127.0.0.1:8000',  # Corrected syntax for local development
+    "https://online-school-1wkk.onrender.com",
+    "http://localhost:3000",
+    "http://192.168.0.108:5500",
+    "http://127.0.0.1:8000",
 ]
 
 
@@ -56,125 +57,83 @@ CSRF_TRUSTED_ORIGINS = [
 
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django_filters',
-    'corsheaders',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'accounts',
-    'reviews',
-    'skill',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django_filters",
+    "corsheaders",
+    "rest_framework",
+    "drf_spectacular",
+    "rest_framework.authtoken",
+    "accounts",
+    "reviews",
+    "skill",
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 
-ROOT_URLCONF = 'Final.urls'
+ROOT_URLCONF = "Final.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates',],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            "templates",
+        ],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'Final.wsgi.app'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-# Replace the SQLite DATABASES configuration with PostgreSQL:
-
-
-# DATABASES = {
-#     'default': dj_database_url.config(        # Replace this value with your local database's connection string.     
-#     default='postgresql://online_school_db_bapv_user:xju23KJpjnglR5n3J1rggLnlxgsm9NZ7@dpg-cragq1tds78s73cru0dg-a.oregon-postgres.render.com/online_school_db_bapv',
-#     conn_max_age=600
-#     )}
+WSGI_APPLICATION = "Final.wsgi.app"
 
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-
-#         'NAME': env("dbname") ,
-#         'USER': env("user"),
-#         'PASSWORD': env("password"),
-#         'HOST': env("host"),
-#         'PORT': env("port"),
-#     }
-# }
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'postgres',
-       'USER': 'postgres.giejeukvxrtvoemxxgbh',
-       'PASSWORD': '01777453595',
-       'HOST': 'aws-0-ap-southeast-1.pooler.supabase.com',
-       'PORT': '6543',
-   }
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
 }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         # 'NAME': 'yourdbname',
-#         'NAME': env("DB_NAME") ,
-#         'USER': env("DB_USER"),
-#         'PASSWORD': env("DB_PASSWORD"),
-#         'HOST': env("DB_HOST"),
-#         'PORT': env("DB_PORT"),
-#     }
-# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -182,9 +141,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -194,43 +153,38 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR/ 'staticfiels'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiels"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = env("email_to_send")  
-EMAIL_HOST_PASSWORD = env("host_pass") 
+EMAIL_HOST_USER = os.getenv("email_to_send")
+EMAIL_HOST_PASSWORD = os.getenv("host_pass")
 
 
-
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    
-)
+AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
 
 
-#this past is for securing my apis
+# this past is for securing my apis
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-        
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
 }
 
