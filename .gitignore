@@ -1,4 +1,109 @@
-Final/.env
-dg.sqlite3
+# ========================
+# 🚀 Elite Django .gitignore
+# ========================
+
+# --- Python ---
 __pycache__/
-/media
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+*.cover
+*.log
+*.pot
+*.py,cover
+
+# --- Django ---
+*.sqlite3
+*.log
+db.sqlite3
+local_settings.py
+settings/local.py
+.env
+.env.*
+.envrc
+*.env
+*.secret
+/secrets.json
+/media/
+/staticfiles/
+/static_root/
+/media_root/
+celerybeat-schedule
+*.mo
+*.pot
+
+# --- Migrations (optional: ignore only initial) ---
+**/migrations/
+!**/migrations/__init__.py
+
+# --- Virtual Environments ---
+venv/
+ENV/
+env/
+.venv/
+
+# --- IDEs & Editors ---
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.swp
+
+# --- OS Files ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+*.bak
+
+# --- Node / Frontend (if applicable) ---
+node_modules/
+*.tgz
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+.npm/
+
+# --- Coverage / Testing ---
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+.pytest_cache/
+
+# --- Git ---
+.gitignore
+.gitattributes
+
+# --- Build / Dist ---
+*.egg
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+*.whl
+
+# --- Docker / Deployment ---
+docker-compose.override.yml
+*.pid
+*.log
+*.sock
+
+# --- Celery ---
+celerybeat.pid
+
+# --- Snapshots ---
+*.dump
+*.sql
+
+# --- Black / Formatting ---
+.pyre/
+.mypy_cache/
+ruff_cache/
+
+# ========================
+# 🔐 Stay Secure. Stay Sharp.
+# ========================
